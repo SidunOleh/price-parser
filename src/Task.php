@@ -10,6 +10,8 @@ class Task
 {
     public function __invoke()
     {
+        set_time_limit(0);
+        
         $productIds = get_posts([
             'post_type' => 'product',
             'numberposts' => -1,
