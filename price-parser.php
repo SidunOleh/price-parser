@@ -16,4 +16,4 @@ const PRICE_PARSER_ROOT = __DIR__;
 /**
  * Composer autoloader
  */
-require_once IMPORT_ROOT . '/vendor/autoload.php';
+require_once PRICE_PARSER_ROOT . '/vendor/autoload.php';
