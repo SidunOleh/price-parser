@@ -32,8 +32,12 @@ class Parser
         
         $pool = new Pool($this->client, $this->requests($productIds), [
             'concurrency' => $this->concurrency,
-            'fulfilled' => [$this, 'fulfilled'],
-            'rejected' => [$this, 'rejected'],
+            'fulfilled' => function(Response $response, int $productId) {
+                $this->fulfilled($response, $productId);
+            },
+            'rejected' => function(Exception $e, int $productId) {
+                $this->rejected($e, $productId);
+            },
         ]);
 
         ($pool->promise())->wait();
@@ -51,7 +55,7 @@ class Parser
         }
     }
 
-    public function fulfilled(Response $response, int $productId)
+    private function fulfilled(Response $response, int $productId)
     {
         $html = $response->getBody()->getContents();
         $dom = new DOMDocument();
@@ -67,7 +71,7 @@ class Parser
         $this->prices[$productId] = $priceTableHtml;
     }
 
-    public function rejected(Exception $e, int $productId)
+    private function rejected(Exception $e, int $productId)
     {
 
     }
