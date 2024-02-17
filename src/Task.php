@@ -34,6 +34,12 @@ class Task
             'handler' => $handlers,
         ]);        
         
-        (new Parser($client))->parse($productIds);
+        $prices = (new Parser($client))->parse($productIds);
+        foreach ($prices as $productId => $pricesTable) {
+            wp_update_post([
+                'ID' => $productId,
+                'post_excerpt' => $pricesTable,
+            ]);
+        }
     }
 }

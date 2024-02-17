@@ -5,6 +5,7 @@ namespace PriceParser;
 use DOMDocument;
 use DOMXPath;
 use Exception;
+use GuzzleHttp\Client;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
@@ -13,16 +14,22 @@ defined('ABSPATH') or die;
 
 class Parser
 {
-    public function __construct(
-        private $client,
-        private int $concurrency = 10
-    )
-    {
+    private Client $client;
 
+    private int $concurrency;
+
+    private array $prices;
+
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+        $this->concurrency = 10;
     }
 
-    public function parse(array $productIds): void
+    public function parse(array $productIds): array
     {
+        $this->prices = [];
+        
         $pool = new Pool($this->client, $this->requests($productIds), [
             'concurrency' => $this->concurrency,
             'fulfilled' => [$this, 'fulfilled'],
@@ -30,6 +37,8 @@ class Parser
         ]);
 
         ($pool->promise())->wait();
+
+        return $this->prices;
     }
 
     private function requests(array $productIds)
@@ -55,10 +64,7 @@ class Parser
         }
         $priceTableHtml = $dom->saveHTML($priceTableNode);
 
-        wp_update_post([
-            'ID' => $productId,
-            'post_excerpt' => $priceTableHtml,
-        ]);
+        $this->prices[$productId] = $priceTableHtml;
     }
 
     public function rejected(Exception $e, int $productId)
