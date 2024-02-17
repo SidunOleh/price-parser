@@ -36,6 +36,6 @@ function schedule_parse_price_event() {
 register_activation_hook(__FILE__, 'schedule_parse_price_event');
 
 /**
- * Parse price
+ * Handle parse price event
  */
 add_action('parse_price_event', new Task);

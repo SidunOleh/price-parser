@@ -9,6 +9,8 @@ use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 
+defined('ABSPATH') or die;
+
 class Parser
 {
     public function __construct(
