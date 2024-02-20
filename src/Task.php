@@ -37,7 +37,8 @@ class Task
         
         $logger = new FileLogger(PRICE_PARSER_ROOT . '/src/logs/error.log');
         
-        $prices = (new Parser($client, $logger))->parse($productIds);
+        $prices = (new Parser($client, $logger))
+            ->parse($productIds);
         foreach ($prices as $productId => $pricesTable) {
             wp_update_post([
                 'ID' => $productId,
