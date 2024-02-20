@@ -35,7 +35,7 @@ class Task
             'handler' => $handlers,
         ]);
         
-        $logger = new FileLogger(PRICE_PARSER_ROOT . '/src/logs/error.log');
+        $logger = new FileLogger(PRICE_PARSER_ROOT . '/logs/error.log');
         
         $prices = (new Parser($client, $logger))
             ->parse($productIds);
