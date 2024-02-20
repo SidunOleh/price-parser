@@ -68,6 +68,9 @@ class Parser
 
         $priceTableNode = $xpath->query('.//table')[0];
         if (! $priceTableNode) {
+            $this->logger->error('No price table was found.', [
+                'product_id' => $productId,
+            ]);
             return;
         }
         $priceTableHtml = $dom->saveHTML($priceTableNode);
