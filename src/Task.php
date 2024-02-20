@@ -5,6 +5,7 @@ namespace PriceParser;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use Wa72\SimpleLogger\FileLogger;
 
 defined('ABSPATH') or die;
 
@@ -32,9 +33,11 @@ class Task
         }));
         $client = new Client([
             'handler' => $handlers,
-        ]);        
+        ]);
         
-        $prices = (new Parser($client))->parse($productIds);
+        $logger = new FileLogger(PRICE_PARSER_ROOT . '/src/logs/error.log');
+        
+        $prices = (new Parser($client, $logger))->parse($productIds);
         foreach ($prices as $productId => $pricesTable) {
             wp_update_post([
                 'ID' => $productId,

@@ -9,6 +9,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Psr\Log\LoggerInterface;
 
 defined('ABSPATH') or die;
 
@@ -16,13 +17,16 @@ class Parser
 {
     private Client $client;
 
+    private LoggerInterface $logger;
+
     private int $concurrency;
 
     private array $prices;
 
-    public function __construct(Client $client)
+    public function __construct(Client $client, LoggerInterface $logger)
     {
         $this->client = $client;
+        $this->logger = $logger;
         $this->concurrency = 10;
     }
 
@@ -73,6 +77,8 @@ class Parser
 
     private function rejected(Exception $e, int $productId)
     {
-
+        $this->logger->error($e->getMessage(), [
+            'product_id' => $productId,
+        ]);
     }
 }
